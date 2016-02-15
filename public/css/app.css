@@ -1,0 +1,60 @@
+html {
+	background-color: #F6F8EE;
+}
+
+.app-navbar {
+    border: medium none;
+    padding: 15px 0;
+    background-color: #95AA61;
+}
+
+.uk-navbar-brand {
+	color: #fff;
+	font-weight: 700;
+}
+
+.menu-login {
+	margin-right: 10px;
+}
+
+.app-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 30px 0;
+}
+
+.app-content {
+	padding: 10px;
+}
+
+.app-box {
+	padding: 20px;
+}
+
+.uk-article-title {
+	font-size: 1.8em;
+}
+
+.uk-nav-header {
+	font-size: 1.2em;
+}
+
+.app-sidebar {
+    border-right: 1px solid #e5e5e5;
+    margin-right: -1px !important;
+}
+
+.app-main {
+    border-left: 1px solid #e5e5e5;
+    padding-left: 50px !important;
+}
+
+.app-footer {
+	position: relative;
+	right: 0;
+	bottom: 0;
+	left: 0;
+    padding: 10px 0;
+    background-color: #000;
+    color: #F6F8EE;
+}
