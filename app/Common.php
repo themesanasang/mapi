@@ -30,13 +30,24 @@ class Common{
     public function UptimeInSeconds($uptime) {
         $mark1=strpos($uptime, "d"); 
         $days= (substr($uptime, 0, $mark1)); 
-   
+
         if(strlen($days) > 2){
             $d=explode("w", $days);
             $days = ($d[0]*7)+$d[1];
         }else{
-            $days = substr($days, 0, 1);
+
+            $d = substr($uptime, 1, 1);
+
+            if( $d == 'w' ){
+                $mark1=strpos($uptime, "w"); 
+                $days= (substr($uptime, 0, $mark1)); 
+                $days = $days*7;
+            }else{
+                $mark1=strpos($uptime, "d"); 
+                $days= (substr($uptime, 0, $mark1)); 
+            }
         }
+
        
         if ($mark1) $uptime=substr($uptime, $mark1 + 1); 
         
