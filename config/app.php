@@ -160,6 +160,8 @@ return [
 
         'Intervention\Image\ImageServiceProvider',
 
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
     ],
 
     /*
@@ -210,6 +212,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
 
         'Image'     => 'Intervention\Image\Facades\Image',
+
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

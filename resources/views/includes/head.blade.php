@@ -6,6 +6,6 @@
 <meta name="csrf-param" content="_token" />
 <title>MAPI</title> 
 
-{!! Html::style('public/css/uikit.min.css') !!}
+{!! Html::style('public/css/uikit.almost-flat.min.css') !!}
 {!! Html::style('public/css/components/tooltip.min.css') !!}
 {!! Html::style('public/css/app.css') !!}

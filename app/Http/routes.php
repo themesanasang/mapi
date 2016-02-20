@@ -44,6 +44,10 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('auth/login', 'Auth\AuthController@postLogin');
 	Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
+	// Authentication facebook routes...
+	Route::get('auth/facebook', 'Auth\AuthController@redirectToProvider');
+	Route::get('auth/facebook/callback', 'Auth\AuthController@handleProviderCallback');
+
 	// Registration routes...
 	Route::get('auth/listuser', 'Auth\AuthController@getListUser');
 	Route::get('auth/register', 'Auth\AuthController@getRegister');
@@ -64,6 +68,25 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('routes/addroom', 'MikrotikController@postAddRoom');
     Route::post('routes/editroom', 'MikrotikController@postEditRoom');
     Route::get('routes/deleteroom/{id1}/{id2}', 'MikrotikController@getDeleteRoom');
+
+    Route::get('routes/hotspot/userprofile/{id}', 'MikrotikController@getUserProfile');
+    Route::get('routes/hotspot/adduserprofile/{id}', 'MikrotikController@getAddUserProfile');
+    Route::post('routes/hotspot/adduserprofile', 'MikrotikController@postAddUserProfile');
+    Route::get('routes/hotspot/edituserprofile/{id1}/{id2}', 'MikrotikController@getEditUserProfile');
+    Route::post('routes/hotspot/edituserprofile', 'MikrotikController@postEditUserProfile');
+    Route::get('routes/hotspot/deleteuserprofile/{id1}/{id2}', 'MikrotikController@getDeleteUserProfile');
+
+    Route::get('routes/hotspot/usernet/{id}', 'MikrotikController@getUserNet');
+    Route::get('routes/hotspot/usernet/{id}/{id2}', 'MikrotikController@getUserNetSearch');
+    Route::get('routes/hotspot/addusernet/{id}', 'MikrotikController@getAddUserNet');
+    Route::post('routes/hotspot/addusernet', 'MikrotikController@postAddUserNet');
+    Route::get('routes/hotspot/editusernet/{id1}/{id2}', 'MikrotikController@getEditUserNet');
+    Route::post('routes/hotspot/editusernet', 'MikrotikController@postEditUserNet');
+    Route::get('routes/hotspot/deleteusernet/{id1}/{id2}', 'MikrotikController@getDeleteUserNet');
+    Route::post('routes/hotspot/usernet/userchkdelete', 'MikrotikController@postDeleteUserNet');
+    Route::get('routes/hotspot/addfileusernet/{id}', 'MikrotikController@getAddFileUserNet');
+    Route::post('routes/hotspot/addfileusernet', 'MikrotikController@postAddFileUserNet');
+
     Route::post('routes/deleteroutes', 'MikrotikController@postDeleteRoutes');
     Route::resource('routes','MikrotikController');
 

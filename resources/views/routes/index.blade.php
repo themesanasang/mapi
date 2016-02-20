@@ -15,6 +15,12 @@
 			</ul>
     	</div>
 		<div class="app-main uk-width-medium-3-4">
+
+			<ul class="uk-breadcrumb">
+			    <li><a href="{{ url('routes') }}">อุปกรณ์เชื่อมต่อ</a></li>
+			    <li class="uk-active"><span>รายการอุปกรณ์เชื่อมต่อ</span></li>
+			</ul>
+
 			<article class="uk-article">
 					<h4 class="uk-article-title">รายการอุปกรณ์เชื่อมต่อ</h4>
 

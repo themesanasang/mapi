@@ -5,20 +5,21 @@
     <div class="uk-grid" data-uk-grid-margin="">
     	<div class="app-sidebar uk-width-medium-1-4 uk-row-first">
 			<ul class="app-nav uk-nav" data-uk-nav="">
-				<li class="uk-nav-header">เมนูจัดการ</li>
+				<!--<li class="uk-nav-header">เมนูจัดการ</li>
 				<li>
 					<a href="{{ url('routes/pageroom') }}/{{ Crypt::encrypt($data->mtid) }}">เพิ่มห้อง</a>
 				</li>
 				<li>
 					<a href="{{ route( 'routes.show', Crypt::encrypt($data->mtid) ) }}">กลับหน้าสถานะอุปรกณ์</a>
-				</li>
+				</li>-->
+
+				@include('routes.menu-routes')
 			</ul>
     	</div>
 		<div class="app-main uk-width-medium-3-4">
 
-			<ul class="uk-breadcrumb">
+			<ul class="uk-breadcrumb uk-hidden-small">
 			    <li><a href="{{ url('routes') }}">อุปกรณ์เชื่อมต่อ</a></li>
-			    <li><a href="{{ route( 'routes.show', Crypt::encrypt($data->mtid)  ) }}">สถานะอุปรกณ์เชื่อมต่อ</a></li>
 			    <li><span>{{ $data->mtname }}</span></li>
 			    <li class="uk-active"><span>เพิ่มห้อง</span></li>
 			</ul>
@@ -47,9 +48,9 @@
 							<label class="uk-form-label" for="room">ชื่อห้อง</label>
 							<div class="uk-form-controls">
 								@if( isset($editroom) )
-									<input id="room" name="room" type="text" placeholder="ชื่อห้อง" value="{{ $editroom->room }}">
+									<input id="room" name="room" type="text" placeholder="ชื่อห้อง" value="{{ $editroom->room }}"> <span class="uk-text-primary">* ควรกรอกข้อมูล (A-Z, a-z, 0-9)</span>
 								@else
-									<input id="room" name="room" type="text" placeholder="ชื่อห้อง">
+									<input id="room" name="room" type="text" placeholder="ชื่อห้อง"> <span class="uk-text-primary">* ควรกรอกข้อมูล (A-Z, a-z, 0-9)</span>
 								@endif
 								
 								@if ($errors->has('room'))

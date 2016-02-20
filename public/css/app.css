@@ -2,10 +2,41 @@ html {
 	background-color: #F6F8EE;
 }
 
+/* Menu */
 .app-navbar {
-    border: medium none;
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.3);
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
     padding: 15px 0;
     background-color: #95AA61;
+}
+.app-navbar li a {
+	color: #fff;
+	
+}
+.uk-navbar-nav li a {
+	text-shadow: 0 0px 0 #fff;
+}
+.uk-navbar-nav li:hover a {
+	background-color:#fff;
+}
+.uk-navbar-nav li.uk-active a {
+	background-color:#fff;
+}
+.uk-navbar-nav .uk-parent li:hover a {
+	color: #000;
+	border: 0;
+}
+.uk-parent li a {
+	color: #000;
+}
+.uk-parent .uk-dropdown {
+	border-radius: 0;
 }
 
 .uk-navbar-brand {
@@ -17,6 +48,12 @@ html {
 	margin-right: 10px;
 }
 
+
+
+
+
+
+/* Content */
 .app-container {
 	max-width: 1200px;
 	margin: 0 auto;
@@ -49,6 +86,87 @@ html {
     padding-left: 50px !important;
 }
 
+
+
+
+
+
+/* Buton Icon left fix */
+.app-icon-left {
+	padding-top: 4px;
+}
+.app-button-login i {
+	font-size: 24px;
+	padding-top: 7px;
+}
+/* Buton Facebook */
+.uk-button-facebook {
+    background-color:  #3b5998;
+	color: #fff;
+	text-shadow: 0 0px 0 #fff;
+}
+/* Hover */
+.uk-button-facebook:hover,
+.uk-button-facebook:focus {
+  background-color: #4565A5;
+  color: #ffffff;
+}
+/* Active */
+.uk-button-facebook:active,
+.uuk-button-facebook.uk-active {
+  background-color: #3b5998;
+  color: #ffffff;
+}
+@media (max-width: 320px) {
+	.app-button-login a, .app-button-login button {
+		font-size: 13px;
+	}
+
+	.app-button-login i {
+		font-size: 18px;
+		padding-top: 10px;
+	}
+}
+
+
+
+
+
+/* Search */
+.app-search {
+	position: relative;
+	padding-bottom: 25px;
+}
+.app-search .form-search a {
+	float: left;
+}
+.app-search .form-search .form-search-box {
+	float: right;
+}
+
+
+.uk-form-file {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    vertical-align: middle;
+}
+
+
+
+/* Table custom */
+.uk-table  th {
+    background-color: #899752;
+    color: #fff;
+    font-weight: 400;
+    text-shadow: 0 0px 0 #fff;
+}
+
+
+
+
+
+/* Footer */
 .app-footer {
 	position: relative;
 	right: 0;

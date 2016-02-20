@@ -10,7 +10,8 @@
         "laravelcollective/html": "5.2.*",
         "tecnick.com/tcpdf": "6.0.*",
         "phpexcel/phpexcel": "dev-master",
-        "intervention/image": "~2.3"
+        "intervention/image": "~2.3",
+        "laravel/socialite": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
