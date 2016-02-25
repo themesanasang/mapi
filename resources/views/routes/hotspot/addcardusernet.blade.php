@@ -13,25 +13,26 @@
 			<ul class="uk-breadcrumb uk-hidden-small">
 			    <li><a href="{{ url('routes') }}">อุปกรณ์เชื่อมต่อ</a></li>
 			    <li><span>{{ $data->mtname }}</span></li>
-			    <li class="uk-active"><span>อัพโหลดไฟล์ผู้ใช้งานอินเตอร์เน็ต</span></li>
+			    <li class="uk-active"><span>สร้างบัตร์ผู้ใช้งานอินเตอร์เน็ต</span></li>
 			</ul>
 
 			<article class="uk-article">
-					<h4 class="uk-article-title">อัพโหลดไฟล์ผู้ใช้งานอินเตอร์เน็ต</h4>
-
-					<div class="exp-excel">
-						<a href="{{ url('storage/originalexcel/user_internet.xls') }}" class="uk-button uk-button-success">
-							<i class="uk-icon-download"></i> ตัวอย่างไฟล์ Excel
-						</a>
-					</div>
-
-					<hr>
+					<h4 class="uk-article-title">สร้างบัตร์ผู้ใช้งานอินเตอร์เน็ต</h4>
 
 					<div class="upload-excel">
-						<form class="uk-form uk-form-horizontal" action="{{ url('routes/hotspot/addfileusernet') }}" method="post" enctype="multipart/form-data">
+						<form class="uk-form uk-form-horizontal" action="{{ url('routes/hotspot/addcardusernet') }}" method="post">
 							{!! csrf_field() !!}
 							<input type="hidden" name="mtid" value="{{ $data->mtid }}"> 
 
+							<div class="uk-form-row">
+								<label class="uk-form-label">ห้อง</label>
+								<div class="uk-form-controls">
+									{!! Form::select('comment', ['none'=>'เลือก'] + $room_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+									@if (Session::has("comment"))
+			                            <span class="uk-text-danger">{{ Session::get('comment') }}</span> 
+			                        @endif
+								</div>
+							</div>
 							<div class="uk-form-row">
 								<label class="uk-form-label">ผู้ให้บริการ</label>
 								<div class="uk-form-controls">
@@ -51,24 +52,20 @@
 								</div>
 							</div>
 							<div class="uk-form-row">
-								<label class="uk-form-label">ไฟล์ Excel</label>
+								<label class="uk-form-label" for="cardvalue">จำนวนบัตร</label>
 								<div class="uk-form-controls">
-									<input type="file" name="fileexcel">
-									@if (Session::has("fileexcel"))
-			                            <span class="uk-text-danger">{{ Session::get('fileexcel') }}</span> 
+									<input type="text" name="cardvalue" placeholder="จำนวนบัตร" > <span class="uk-text-primary">* ควรกรอกข้อมูล</span>
+									@if ($errors->has('cardvalue'))
+			                            <span class="uk-text-danger">{{ $errors->first('cardvalue') }}</span> 
 			                        @endif
-								</div>
+		                    	</div>
 							</div>
 							<div class="uk-form-row">
 								<div class="uk-form-controls">
-									<button class="uk-button uk-button-primary" type="submit"><i class="uk-icon-upload"></i> อัพโหลดไฟล์</button>
+									<button class="uk-button uk-button-primary" type="submit">สร้างบัตร</button>
 								</div>
 							</div>								
 						</form>
-						@if (Session::has("fileexcelok"))
-								<br>
-	                            <span class="uk-text-danger">{{ Session::get('fileexcelok') }}</span> 
-	                    @endif
 					</div>
 
 			</article>

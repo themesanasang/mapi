@@ -1,4 +1,9 @@
 {!! Html::script('public/js/jquery.js') !!}
 {!! Html::script('public/js/uikit.min.js') !!}
 {!! Html::script('public/js/components/tooltip.min.js') !!}
+{!! Html::script('public/js/components/sticky.min.js') !!}
+{!! Html::script('public/js/jquery.jqplot.min.js') !!}
+{!! Html::script('public/js/plugins/jqplot.barRenderer.js') !!}
+{!! Html::script('public/js/plugins/jqplot.categoryAxisRenderer.js') !!}
+{!! Html::script('public/js/plugins/jqplot.pointLabels.js') !!}
 {!! Html::script('public/js/app.js') !!}

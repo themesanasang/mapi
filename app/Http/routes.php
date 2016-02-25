@@ -27,19 +27,8 @@
 
 Route::group(['middleware' => ['web']], function () {
 
-	Route::get('/', function () {
-	    if(Auth::check()){
-	    	if( Auth::user()->type == 'user' ){
-	    		return view('content/index');
-	    	}else{
-	    		return view('admin/index');
-	    	}
-	    }else{
-	        return view('auth/login');
-	    }
-	});
-
 	// Authentication routes...
+    Route::get('/', 'Auth\AuthController@getLogin');
 	Route::get('auth/login', 'Auth\AuthController@getLogin');
 	Route::post('auth/login', 'Auth\AuthController@postLogin');
 	Route::get('auth/logout', 'Auth\AuthController@getLogout');
@@ -57,9 +46,13 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('auth/deleteuser', 'Auth\AuthController@postDeleteUser');
 
 
+    //Home page
     Route::get('/systems', 'AdminController@index');
     Route::get('/home', 'ContentController@index');
 
+
+    //Dashboard admin
+    Route::get('/getchart01', 'AdminController@getchart01');
 
 
     // Mikrotik routes...
@@ -86,6 +79,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('routes/hotspot/usernet/userchkdelete', 'MikrotikController@postDeleteUserNet');
     Route::get('routes/hotspot/addfileusernet/{id}', 'MikrotikController@getAddFileUserNet');
     Route::post('routes/hotspot/addfileusernet', 'MikrotikController@postAddFileUserNet');
+    Route::get('routes/hotspot/addcardusernet/{id}', 'MikrotikController@getAddCardUserNet');
+    Route::post('routes/hotspot/addcardusernet', 'MikrotikController@postAddCardUserNet');
+
+    Route::get('routes/hotspot/moveusernetroom/{id}', 'MikrotikController@getMoveRoomUserNet');
 
     Route::post('routes/deleteroutes', 'MikrotikController@postDeleteRoutes');
     Route::resource('routes','MikrotikController');

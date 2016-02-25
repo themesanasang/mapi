@@ -12,6 +12,59 @@ $(function(){
 
 
   /**
+  * check show chart
+  */
+  var chkindex = window.location.pathname;
+
+  /* user admin */
+  if( chkindex == '/mapi/systems' ){
+
+    $.getJSON( "getchart01", function( json ) { 
+        var data = [];
+        for (var i=0; i < json.length; i++) {
+          data.push([json[i].name, parseInt(json[i].numroutes)]);
+        }
+
+        //console.log(data);
+
+        $('#chart01').jqplot([data], {
+            title:'จำนวนอุปกรณ์เชื่อมต่อ ต่อผู้ใช้งาน',
+            seriesDefaults:{
+                renderer:$.jqplot.BarRenderer,
+                rendererOptions: {
+                    varyBarColor: true
+                },
+                pointLabels: { 
+                    show: true,
+                    formatString: '%s ตัว',
+                    formatter: $.jqplot.LabelFormatter 
+                }
+            },
+            axes:{
+                xaxis:{
+                    renderer: $.jqplot.CategoryAxisRenderer
+                }
+            }
+        });
+    });
+  
+ 
+    
+
+  }
+
+  /* user other */
+  if( chkindex == '/mapi/home' ){
+
+  }
+  
+
+
+
+
+
+
+  /**
   * form search user
   */
   $('#searchuser').on('change', function () {
@@ -92,6 +145,7 @@ function resizeDiv() {
   vph = $(window).innerHeight();
   $('.app-container').css({'height': vph + 'px'});
 }
+
 
 
 /**

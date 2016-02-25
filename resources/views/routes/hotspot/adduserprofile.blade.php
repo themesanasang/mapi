@@ -67,7 +67,7 @@
 						<div class="uk-form-row">
 							<label class="uk-form-label">รายการที่อยู่</label>
 							<div class="uk-form-controls">
-								{!! Form::select('address', ['none'=>'none'] + $address_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								{!! Form::select('address', ['none'=>'เลือก'] + $address_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
 							</div>
 						</div>
 						

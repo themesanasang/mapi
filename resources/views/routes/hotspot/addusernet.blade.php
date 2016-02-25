@@ -5,14 +5,6 @@
     <div class="uk-grid" data-uk-grid-margin="">
     	<div class="app-sidebar uk-width-medium-1-4 uk-row-first">
 			<ul class="app-nav uk-nav" data-uk-nav="">
-				<!--<li class="uk-nav-header">เมนูจัดการ</li>
-				<li>
-					<a href="{{ url('routes/hotspot/addusernet') }}/{{ Crypt::encrypt($data->mtid) }}">เพิ่มผู้ใช้งานอินเตอร์เน็ต</a>
-				</li>
-				<li>
-					<a href="{{ url('routes/hotspot/usernet') }}/{{ Crypt::encrypt($data->mtid) }}">กลับหน้ารายการผู้ใช้งานอินเตอร์เน็ต</a>
-				</li>-->
-
 				@include('routes.menu-routes')
 			</ul>
     	</div>
@@ -34,13 +26,19 @@
 						<div class="uk-form-row">
 							<label class="uk-form-label">ห้อง</label>
 							<div class="uk-form-controls">
-								{!! Form::select('comment', ['none'=>'none'] + $room_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								{!! Form::select('comment', ['none'=>'เลือก'] + $room_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								@if (Session::has("comment"))
+		                            <span class="uk-text-danger">{{ Session::get('comment') }}</span> 
+		                        @endif
 							</div>
 						</div>
 						<div class="uk-form-row">
 							<label class="uk-form-label">ผู้ให้บริการ</label>
 							<div class="uk-form-controls">
-								{!! Form::select('server', ['none'=>'none'] + $server_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								{!! Form::select('server', ['none'=>'เลือก'] + $server_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								@if (Session::has("server"))
+		                            <span class="uk-text-danger">{{ Session::get('server') }}</span> 
+		                        @endif
 							</div>
 						</div>
 						<div class="uk-form-row">
@@ -73,7 +71,10 @@
 						<div class="uk-form-row">
 							<label class="uk-form-label">รูปแบบผู้ใช้งาน</label>
 							<div class="uk-form-controls">
-								{!! Form::select('profile', ['none'=>'none'] + $profile_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								{!! Form::select('profile', ['none'=>'เลือก'] + $profile_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								@if (Session::has("profile"))
+		                            <span class="uk-text-danger">{{ Session::get('profile') }}</span> 
+		                        @endif
 							</div>
 						</div>
 						

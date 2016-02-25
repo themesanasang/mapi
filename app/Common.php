@@ -202,7 +202,7 @@ class Common{
                     switch ($type){
                         case 'alpha'    :   $pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
                             break;
-                        case 'alnum'    :   $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        case 'alnum'    :   $pool = '123456789abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ';
                             break;
                         case 'numeric'  :   $pool = '0123456789';
                             break;
@@ -293,6 +293,53 @@ class Common{
         return $hours.''.$mins.''.$secs;
     }
 
+
+    public static function get_memory_game() {
+      if( file_exists('/proc/meminfo') ){       
+          foreach(file('/proc/meminfo') as $ri)
+            $m[strtok($ri, ':')] = strtok('');
+          return 100 - round(($m['MemFree'] + $m['Buffers'] + $m['Cached']) / $m['MemTotal'] * 100);
+        }
+        else{
+            return '-';
+        }
+    } 
+    
+    public static function get_cpu_game() {
+        if( file_exists('/proc/stat') ){
+            $stat1 = file('/proc/stat'); 
+            sleep(1); 
+            $stat2 = file('/proc/stat'); 
+            $info1 = explode(" ", preg_replace("!cpu +!", "", $stat1[0])); 
+            $info2 = explode(" ", preg_replace("!cpu +!", "", $stat2[0])); 
+            $dif = array(); 
+            $dif['user'] = $info2[0] - $info1[0]; 
+            $dif['nice'] = $info2[1] - $info1[1]; 
+            $dif['sys'] = $info2[2] - $info1[2]; 
+            $dif['idle'] = $info2[3] - $info1[3]; 
+            $total = array_sum($dif); 
+            $cpu = array(); 
+            foreach($dif as $x=>$y) $cpu[$x] = round($y / $total * 100, 1);
+
+            return sprintf("%.1f%%",100-$cpu["idle"]);
+        }
+        else {
+            return '-';
+        }
+    }
+
+    // Display uptime system
+    // @return string Return uptime system
+    public static function uptime() {
+        $uptime = shell_exec("cut -d. -f1 /proc/uptime");
+        $days = floor($uptime/60/60/24);
+        $hours = $uptime/60/60%24;
+        $mins = $uptime/60%60;
+        $secs = $uptime%60;
+        $result = "$days Day. $hours H.";
+
+        return $result;
+    }
 
 
 

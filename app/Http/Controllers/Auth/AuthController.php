@@ -88,7 +88,13 @@ class AuthController extends Controller
     public function getLogin()
     {
         if(Auth::check()){
-            return view('admin/index');
+            $user = Auth::User();
+
+            if( $user->type == 'admin' ){
+                return redirect()->intended('/systems');
+            }else{
+                return redirect()->intended('/home');  
+            }
         }else{
             return view('auth/login');
         }

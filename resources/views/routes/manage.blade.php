@@ -5,20 +5,6 @@
     <div class="uk-grid" data-uk-grid-margin="">
     	<div class="app-sidebar uk-width-medium-1-4 uk-row-first">
 			<ul class="app-nav uk-nav" data-uk-nav="">
-				<!--<li class="uk-nav-header">เมนูจัดการ</li>
-				<li>
-					<a href="{{ url('routes/pageroom') }}/{{ Crypt::encrypt($data->mtid) }}">เพิ่มห้อง</a>
-				</li>
-				<li>
-					<a href="{{ url('routes/hotspot/userprofile') }}/{{ Crypt::encrypt($data->mtid) }}">รายการรูปแบบผู้ใช้งาน</a>
-				</li>
-				<li>
-					<a href="{{ url('routes/hotspot/usernet') }}/{{ Crypt::encrypt($data->mtid) }}">รายการผู้ใช้งานอินเตอร์เน็ต</a>
-				</li>
-				<li>
-					<a href="{{ url('routes') }}">กลับหน้ารายการ</a>
-				</li>-->
-
 				@include('routes.menu-routes')
 			</ul>
     	</div>

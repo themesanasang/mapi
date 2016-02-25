@@ -39,13 +39,13 @@
 						<div class="uk-form-row">
 							<label class="uk-form-label">ห้อง</label>
 							<div class="uk-form-controls">
-								{!! Form::select('comment', ['none'=>'none'] + $room_list, $comment, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								{!! Form::select('comment', ['none'=>'เลือก'] + $room_list, $comment, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
 							</div>
 						</div>
 						<div class="uk-form-row">
 							<label class="uk-form-label">ผู้ให้บริการ</label>
 							<div class="uk-form-controls">
-								{!! Form::select('server', ['none'=>'none'] + $server_list, $server, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								{!! Form::select('server', ['none'=>'เลือก'] + $server_list, $server, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
 							</div>
 						</div>
 						<div class="uk-form-row">
@@ -78,7 +78,7 @@
 						<div class="uk-form-row">
 							<label class="uk-form-label">รูปแบบผู้ใช้งาน</label>
 							<div class="uk-form-controls">
-								{!! Form::select('profile', ['none'=>'none'] + $profile_list, $profile, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
+								{!! Form::select('profile', ['none'=>'เลือก'] + $profile_list, $profile, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
 							</div>
 						</div>
 						

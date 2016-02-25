@@ -86,6 +86,11 @@ html {
     padding-left: 50px !important;
 }
 
+.app-box-content {
+	position: relative;
+	z-index: -999;
+}
+
 
 
 
@@ -134,7 +139,6 @@ html {
 
 /* Search */
 .app-search {
-	position: relative;
 	padding-bottom: 25px;
 }
 .app-search .form-search a {

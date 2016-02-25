@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Auth;
+use App\User;
+use App\Mt;
+use App\Room;
+use App\Common;
+use App\Card;
+use DB;
+use Routeros_api;
 
 class AdminController extends Controller
 {
@@ -29,75 +36,55 @@ class AdminController extends Controller
     public function index()
     {
         if(Auth::check()){
-            return view('admin/index');
+
+            $user = count( User::all() );
+            $mt = count( Mt::all() );
+            $card = count( Card::all() );
+
+            $common = new Common();
+
+            //Hdd info
+            $perc =  round((disk_free_space("/")*100) / disk_total_space("/"),2);
+            $hddperc = 100 - $perc;
+            //server linux                           
+            $server = array(                         
+                    'cpuload'            => $common->get_cpu_game(),
+                    'uptime'             => $common->uptime(),
+                    'memory_usage'       => $common->get_memory_game(),                      
+                    'hdd_total_space'    => $common->byte_format(disk_total_space("/")),
+                    'hdd_free_space'     => $common->byte_format(disk_total_space("/")-disk_free_space("/")),
+                    'hdd_perc'           => $hddperc
+                );
+
+            return view('admin/index', compact('user', 'mt', 'card', 'server'));
         }else{
             return view('auth/login');
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
+
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    * แสดง กราฟ หน้าแรก
+    */
+    public function getchart01()
     {
-        //
-    }
+        if(Auth::check()){
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+            $data = DB::table( 'users' )
+                    ->select( DB::raw('(select count(*) from routes where usermanage=users.id) as numroutes'), 'users.name' )
+                    ->get(); 
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+            return $data;
+            
+        }else{
+            return view('auth/login');
+        }
     }
+    
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+
+
 }

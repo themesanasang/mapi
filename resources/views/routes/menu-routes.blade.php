@@ -27,3 +27,9 @@
 <li>
 	<a href="{{ url('routes/hotspot/addfileusernet') }}/{{ Crypt::encrypt($data->mtid) }}">อัพโหลดไฟล์ผู้ใช้งานอินเตอร์เน็ต</a>
 </li>
+<li>
+	<a href="{{ url('routes/hotspot/addcardusernet') }}/{{ Crypt::encrypt($data->mtid) }}">สร้างบัตรผู้ใช้งานอินเตอร์เน็ต</a>
+</li>
+<li>
+	<a href="{{ url('routes/hotspot/moveusernetroom') }}/{{ Crypt::encrypt($data->mtid) }}">ย้ายห้องผู้ใช้งานอินเตอร์เน็ต</a>
+</li>

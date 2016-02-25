@@ -15,17 +15,32 @@
   }
 ?>
 
-<nav class="app-navbar uk-navbar uk-navbar-attached">
-	<a class="uk-navbar-brand" href="{{ url('/') }}">MAPI</a>
-	<ul class="uk-navbar-nav uk-hidden-small">	
+<nav class="app-navbar uk-navbar uk-navbar-attached" data-uk-sticky="{boundary:'#define-an-offset'}">  
+  @if (Auth::guest())
+       <a class="uk-navbar-brand" href="{{ url('/') }}">MAPI</a>        
+  @else
+      @if (Auth::user()->type == 'admin')
+        <a class="uk-navbar-brand" href="{{ url('/systems') }}">MAPI</a>      
+       @else
+        <a class="uk-navbar-brand" href="{{ url('/home') }}">MAPI</a>
+       @endif
+  @endif 
+
+  <ul class="uk-navbar-nav uk-hidden-small">	
 		
 		@if (Auth::guest())
             
-        @else	
+    @else	
 
         	<li class="{{ $activeurl == '/' ? 'uk-active' : '' }} {{ $activeurl == 'systems' ? 'uk-active' : '' }} {{ $activeurl == 'home' ? 'uk-active' : '' }}">
-	    		<a href="{{ url('/') }}">หน้าหลัก</a>
-	    	    </li>
+	    		 @if (Auth::user()->type == 'admin')
+            <a href="{{ url('/systems') }}">หน้าหลัก</a>      
+           @else
+            <a href="{{ url('/home') }}">หน้าหลัก</a>
+           @endif
+           
+	    	  
+          </li>
           <li class="{{ ($activeurl == 'routes' || Request::is('routes/*')) ? 'uk-active' : '' }}">
             <a href="{{ url('/routes') }}">อุปกรณ์เชื่อมต่อ</a>
           </li>
@@ -37,7 +52,7 @@
 
         	<li><a href="{{ url('auth/logout') }}">ออกจากระบบ</a></li>
 
-        @endif
+    @endif
 
 	</ul>
 

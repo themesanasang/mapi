@@ -30,6 +30,13 @@
 			<article class="uk-article">
 					<h4 class="uk-article-title">รายการรูปแบบผู้ใช้งาน</h4>
 
+					@if(Session::has('message'))
+					 <div class="uk-alert uk-alert-danger" data-uk-alert="">
+					 	<a class="uk-alert-close uk-close" href=""></a>
+					 	<p>{{ Session::get('message') }}</p>
+					 </div>
+					@endif
+
 					@if( isset($profile) )
 						@if( count($profile) > 0 )
 							<div class="uk-overflow-container">

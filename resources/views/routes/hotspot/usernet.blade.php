@@ -40,6 +40,7 @@
 										<thead>
 											<tr>
 												<th><input name="user_select_all" value="1" id="user-select-all" type="checkbox"></th>
+												<th>ห้อง</th>
 												<th>ผู้ให้บริการ</th>
 												<th>ชื่อผู้ใช้งาน</th>
 												<th>รูปแบบผู้ใช้งาน</th>
@@ -52,6 +53,7 @@
 											@foreach($user as $value)
 						                        <tr>
 						                        	<td><input type="checkbox" name="id[]" value="{{ $value['.id'] }}"></td>
+						                        	<td>{!! ((isset($value['comment']))?$value['comment']:'-') !!}</td>
 						                            <td>{!! ((isset($value['server']))?$value['server']:'-') !!}</td>
 						                            <td>{!! ((isset($value['name']))?$value['name']:'-') !!}</td>
 						                            <td>{!! ((isset($value['profile']))?$value['profile']:'-') !!}</td>
@@ -68,6 +70,9 @@
 						                    @endforeach
 										</tbody>
 									</table>
+
+									<?php echo $user->render(); ?>
+
 								</div>
 								</div>
 							</div>

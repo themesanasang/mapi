@@ -8,4 +8,5 @@
 
 {!! Html::style('public/css/uikit.almost-flat.min.css') !!}
 {!! Html::style('public/css/components/tooltip.min.css') !!}
+{!! Html::style('public/css/components/jquery.jqplot.min.css') !!}
 {!! Html::style('public/css/app.css') !!}

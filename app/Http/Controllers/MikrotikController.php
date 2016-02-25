@@ -9,6 +9,7 @@ use App\User;
 use App\Mt;
 use App\Room;
 use App\Common;
+use App\Card;
 use DB;
 use Crypt;
 use Request;
@@ -16,6 +17,11 @@ use Routeros_api;
 use Validator;
 use PHPExcel_IOFactory;
 use PHPExcel_Cell;
+use TCPDF;
+use Response;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+
 
 class MikrotikController extends Controller
 {
@@ -346,11 +352,37 @@ class MikrotikController extends Controller
             if ($validator->fails()) {               
                 return Redirect()->back()->withInput()->withErrors($validator);
             }else{
-                Room::where('id', $postData['id'])
-                    ->update([
+
+                $data = Mt::where('mtid', $postData['mtid'])->first();
+                $room = Room::where('id', $postData['id'])->first();
+                
+                $API = new \App\routeros_api(); 
+                $API->debug = false;   
+
+                if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                     
+                    $user = $API->comm("/ip/hotspot/user/print", array(
+                      "?comment" => $room->room,
+                    ));
+                    
+                    $API->disconnect();  
+
+                    if( isset($user['!trap']) ){
+                      return view('routes/error_connect', compact('data'));
+                    }  
+                    
+                }else{
+                    return view('routes/error_connect', compact('data'));
+                }
+
+                if( count($user) == 0 ){
+                    Room::where('id', $postData['id'])->update([
                         'room' => $postData['room'],
                         'roomdetail' => $postData['roomdetail']
                     ]);
+                }else{
+                    return redirect()->back()->with('message',"เกิดข้อผิดผลาด!! มีผู้ใช้งานอยู่ในห้องนี้. \nกรุณาตรวจสอบอีกครั้ง.");
+                }
             }
             
             return redirect('routes/pageroom/'.Crypt::encrypt($postData['mtid']));
@@ -368,8 +400,35 @@ class MikrotikController extends Controller
         $mtid = Crypt::decrypt($mtid);
 
         if(Auth::check()){
-            Room::where('id', $id)->delete();
-            return redirect('routes/pageroom/'.Crypt::encrypt($mtid));
+            
+            $data = Mt::where('mtid', $mtid)->first();
+            $room = Room::where('id', $id)->first();
+            
+            $API = new \App\routeros_api(); 
+            $API->debug = false;   
+
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                 
+                $user = $API->comm("/ip/hotspot/user/print", array(
+                  "?comment" => $room->room,
+                ));
+                
+                $API->disconnect();  
+
+                if( isset($user['!trap']) ){
+                  return view('routes/error_connect', compact('data'));
+                }  
+                
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
+
+            if( count($user) == 0 ){
+                Room::where('id', $id)->delete();
+                return redirect('routes/pageroom/'.Crypt::encrypt($mtid));
+            }else{
+                return redirect()->back()->with('message',"เกิดข้อผิดผลาด!! มีผู้ใช้งานอยู่ในห้องนี้. \nกรุณาตรวจสอบอีกครั้ง.");
+            }
         }else{
             return view('auth/login');
         }
@@ -619,9 +678,21 @@ class MikrotikController extends Controller
 
             if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
                 
-                $profile = $API->comm("/ip/hotspot/user/profile/remove", array(
+                $pro = $API->comm("/ip/hotspot/user/profile/print", array(
+                  "?.id" => $id,
+                ));
+
+                $user = $API->comm("/ip/hotspot/user/print", array(
+                  "?profile" => $pro[0]['name'],
+                ));
+
+                if( count($user) == 0 ){
+                    $profile = $API->comm("/ip/hotspot/user/profile/remove", array(
                           ".id" => e($id),
-                        ));    
+                        )); 
+                }else{
+                    return redirect()->back()->with('message',"เกิดข้อผิดผลาด!! มีผู้ใช้งานอยู่ในรูปแบบการใช้งานนี้. \nกรุณาตรวจสอบอีกครั้ง.");
+                }
            
                 $API->disconnect();
 
@@ -672,6 +743,17 @@ class MikrotikController extends Controller
                   return view('routes/error_connect', compact('data'));
                 }  
 
+                /* Paginator Array */
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                if (is_null($currentPage)) {
+                    $currentPage = 1;
+                }
+                $collection = new Collection($user);
+                $perPage = 50;
+                $currentPageSearchResults = $collection->slice( ($currentPage - 1) * $perPage, $perPage)->all();
+                $user= new LengthAwarePaginator($currentPageSearchResults, count($collection), $perPage);
+                $user->setPath(Crypt::encrypt($mtid));
+
                 return view('routes/hotspot/usernet', compact('data', 'user', 'room_list'));
             }else{
                 return view('routes/error_connect', compact('data'));
@@ -691,6 +773,7 @@ class MikrotikController extends Controller
         }else{
             $roomsearch = Crypt::decrypt($roomsearch);
             $roomsearch = Room::find($roomsearch);
+            $roomkey = $roomsearch->room;
         }
 
         $mtid = Crypt::decrypt($mtid);
@@ -715,7 +798,7 @@ class MikrotikController extends Controller
                    $user = $API->comm("/ip/hotspot/user/getall"); 
                 }else{
                     $user = $API->comm("/ip/hotspot/user/print", array(
-                      "?comment" => $roomsearch->room,
+                      "?comment" => $roomkey ,
                     ));
                 }  
                 
@@ -790,9 +873,19 @@ class MikrotikController extends Controller
         if(Auth::check()){
             $postData = Request::All();
 
+            if( $postData['comment'] == 'none' ){
+                return Redirect()->back()->with('comment', 'กรุณาเลือกข้อมูล');
+            }
+            if( $postData['server'] == 'none' ){
+                return Redirect()->back()->with('server', 'กรุณาเลือกข้อมูล');
+            }
+            if( $postData['profile'] == 'none' ){
+                return Redirect()->back()->with('profile', 'กรุณาเลือกข้อมูล');
+            }
+
             $messages = [
                 'name.required' => 'กรุณากรอกชื่อผู้ใช้งาน', 
-                'password.required' => 'กรุณากรอกรหัสผ่าน'                 
+                'password.required' => 'กรุณากรอกรหัสผ่าน'                
             ];
 
             $rules = [
@@ -842,7 +935,33 @@ class MikrotikController extends Controller
         if(Auth::check()){
             $data = Mt::where('mtid', $mtid)->first();
 
-            return view('routes/hotspot/addfileusernet', compact('data'));
+            $API = new \App\routeros_api(); 
+            $API->debug = false;   
+
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                $ARRAY = $API->comm ("/ip/hotspot/getall");
+                //ดึงค่าใน mt ไม่ได้หรือ error แสดง 404
+                if( isset($ARRAY['!trap']) ){
+                  return view('routes/error_connect', compact('data'));
+                } 
+                $ARRAY2 = $API->comm("/ip/hotspot/user/profile/getall");  
+
+                $API->disconnect();
+
+                $server_list=[];
+                foreach ($ARRAY as $value) {                    
+                 $server_list[$value['name']] = $value['name'];
+                } 
+
+                $profile_list=[];
+                foreach ($ARRAY2 as $value) {                    
+                 $profile_list[$value['name']] = $value['name'];
+                } 
+
+                return view('routes/hotspot/addfileusernet', compact('data', 'server_list', 'profile_list'));
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
         }else{
             return view('auth/login');
         } 
@@ -855,8 +974,13 @@ class MikrotikController extends Controller
     {
         $postData = Request::All();
         $file = Request::file('fileexcel');
-        //return $file->getMimeType();
 
+        if( $postData['server'] == 'none' ){
+            return Redirect()->back()->with('server', 'กรุณาเลือกข้อมูล');
+        }
+        if( $postData['profile'] == 'none' ){
+            return Redirect()->back()->with('profile', 'กรุณาเลือกข้อมูล');
+        }
         if( $file == '' ){
             return Redirect()->back()->with('fileexcel', 'กรุณาลองใหม่อีกครั้ง');
         }
@@ -899,10 +1023,10 @@ class MikrotikController extends Controller
                         $comment    = $val[2];
 
                         $ARRAY = $API->comm("/ip/hotspot/user/add", array(
-                            'server'    => 'all',
+                            'server'    => $postData['server'],
                             'name'      => $name, 
                             'password'  => $password,
-                            'profile'   => 'default',
+                            'profile'   => $postData['profile'],
                             'comment'   => $comment
                         )); 
                         
@@ -915,6 +1039,336 @@ class MikrotikController extends Controller
             }
 
             return Redirect()->back()->with('fileexcelok', 'อัพโหลดไฟล์เรียบร้อยแล้ว');
+        }
+    }
+
+    /**
+    * แสดงหน้า สร้างบัตร ผู้ใช้งาน internet
+    */
+    public function getAddCardUserNet($mtid)
+    {
+        $mtid = Crypt::decrypt($mtid);
+
+        if(Auth::check()){
+            $data = Mt::where('mtid', $mtid)->first();
+            $room = Room::where('mtid', $mtid)->get();
+
+            $room_list=[];
+            foreach ($room as $key => $value) {                    
+               $room_list[$value->room] = $value->room;
+            } 
+
+            $API = new \App\routeros_api(); 
+            $API->debug = false;   
+
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                $ARRAY = $API->comm ("/ip/hotspot/getall");
+                //ดึงค่าใน mt ไม่ได้หรือ error แสดง 404
+                if( isset($ARRAY['!trap']) ){
+                  return view('routes/error_connect', compact('data'));
+                } 
+                $ARRAY2 = $API->comm("/ip/hotspot/user/profile/getall");  
+
+                $API->disconnect();
+
+                $server_list=[];
+                foreach ($ARRAY as $value) {                    
+                 $server_list[$value['name']] = $value['name'];
+                } 
+
+                $profile_list=[];
+                foreach ($ARRAY2 as $value) {                    
+                 $profile_list[$value['name']] = $value['name'];
+                } 
+
+                return view('routes/hotspot/addcardusernet', compact('data', 'server_list', 'profile_list', 'room_list'));
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
+        }else{
+            return view('auth/login');
+        } 
+    }
+
+    public function postAddCardUserNet()
+    {
+        if(Auth::check()){
+            $postData = Request::All();
+
+            if( $postData['comment'] == 'none' ){
+                return Redirect()->back()->with('comment', 'กรุณาเลือกข้อมูล');
+            }
+            if( $postData['server'] == 'none' ){
+                return Redirect()->back()->with('server', 'กรุณาเลือกข้อมูล');
+            }
+            if( $postData['profile'] == 'none' ){
+                return Redirect()->back()->with('profile', 'กรุณาเลือกข้อมูล');
+            }
+
+            $messages = [
+                'cardvalue.required' => 'กรุณากรอก'            
+            ];
+
+            $rules = [
+                'cardvalue' => 'required'
+            ];
+
+            $validator = Validator::make($postData, $rules, $messages);
+            if ($validator->fails()) {               
+                return Redirect()->back()->withInput()->withErrors($validator);
+            }else{
+                $data = Mt::where('mtid', $postData['mtid'])->first();
+
+                $cardvalue = $postData['cardvalue'];
+
+                $API = new \App\routeros_api(); 
+                $API->debug = false;   
+
+                if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                    
+                    for( $i=0; $i < $cardvalue; $i++ )
+                    {
+                        $username  = Common::random_string('alnum', 8);
+                        $password  = Common::random_string('alnum', 8);
+
+                        Card::create([
+                            'created_by' => Auth::user()->name,
+                            'room' => $postData['comment'],
+                            'username' => $username,
+                            'password' => $password,
+                            'profile' => $postData['profile']
+                        ]);
+
+                        $ARRAY = $API->comm("/ip/hotspot/user/add", array(
+                            'server'    => e($postData['server']),
+                            'name'      => $username, 
+                            'password'  => $password,
+                            'profile'   => e($postData['profile']),
+                            'comment'   => e($postData['comment'])
+                        )); 
+
+                        $stack[] = array(
+                          'created_by'    =>  Auth::user()->name,
+                          'username'      =>  $username,
+                          'password'      =>  $password,
+                          'profile'       =>  $postData['profile'],
+                          'created_date'  =>  date('Y-m-d')
+                        );
+
+                    }//end for จำนวนบัตร
+
+                    $API->disconnect();
+
+                    //PDF
+                    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+                    $pdf->SetPrintHeader(false);
+                    $pdf->SetPrintFooter(false);                                   
+                     
+                    // set header and footer fonts
+                    $pdf->setHeaderFont(array('angsanaupc','',PDF_FONT_SIZE_MAIN));
+                    $pdf->setFooterFont(array('angsanaupc','',PDF_FONT_SIZE_DATA));
+                     
+                    // set default monospaced font
+                    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+                     
+                    // set margins
+                    $pdf->SetMargins(0, 0, 0, 0);
+                    $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+                    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+                    
+                    $pdf->SetFont('angsanaupc','',14,'',true); 
+
+                    $pdf->AddPage(); 
+
+                    $row = 0;
+                    $flag = 0;   
+                    $x1 = 0;
+                    $x2 = 0;
+                    $y = 0;
+                    $w = 0;
+
+                    $h = 30;
+                    
+                    $h1 = $h;
+                    $h2 = $h;
+                    $top_v1 = 1;
+                    $top_v2 = 1;
+                    $top_h1 = 1;
+                    $top_h2 = $h;
+
+                    $xp = 0.5;
+                    $yp = 0.5;  
+
+                    $nasleft = 6;
+                    $nastop  = 2;
+                    $groupleft = 6;
+                    $grouptop  = 7;
+                    $userleft = 6;
+                    $usertop  = 13;
+                    $passleft = 6;
+                    $passtop  = 18;              
+                  
+                    $style = array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0));
+                    foreach ($stack as $key) {                   
+
+                        if( $row == 0 ){
+                            $x1 = 0.5;
+                            $x2 = 49.75;
+                            $y = 0.5;
+                            $w = 49.75;
+
+                            $nasleft = $nasleft;
+                            $nastop  = $nastop;
+                            $groupleft = $groupleft;
+                            $grouptop  = $grouptop;
+                            $userleft = $userleft;
+                            $usertop  = $usertop;
+                            $passleft = $passleft;
+                            $passtop  = $passtop; 
+                        } 
+                        if( $row == 1 ){
+                            $x1 = 49.75;
+                            $x2 = 99.75;
+                            $y = 49.75;
+                            $w = 99.75;
+
+                            $nasleft = $nasleft+50;
+                            $nastop  = $nastop;
+                            $groupleft = $groupleft+50;
+                            $grouptop  = $grouptop;
+                            $userleft = $userleft+50;
+                            $usertop  = $usertop;
+                            $passleft = $passleft+50;
+                            $passtop  = $passtop; 
+                        } 
+                        if( $row == 2 ){
+                            $x1 = 99.75;
+                            $x2 = 149;
+                            $y = 99.75;
+                            $w = 149;
+
+                            $nasleft = $nasleft+50;
+                            $nastop  = $nastop;
+                            $groupleft = $groupleft+50;
+                            $grouptop  = $grouptop;
+                            $userleft = $userleft+50;
+                            $usertop  = $usertop;
+                            $passleft = $passleft+50;
+                            $passtop  = $passtop;
+                        }    
+                         if( $row == 3 ){
+                            $x1 = 149;
+                            $x2 = 199.75;
+                            $y = 149;
+                            $w = 199.75;
+
+                            $nasleft = $nasleft+50;
+                            $nastop  = $nastop;
+                            $groupleft = $groupleft+50;
+                            $grouptop  = $grouptop;
+                            $userleft = $userleft+50;
+                            $usertop  = $usertop;
+                            $passleft = $passleft+50;
+                            $passtop  = $passtop; 
+                        }    
+
+                        
+                        $pdf->Line($x1, $h1, $x1, $top_v1, $style);//left
+                        $pdf->Line($y, $top_h1, $w, $top_h1, $style);//top
+                        $pdf->Line($x2, $h2, $x2, $top_v2, $style);//right
+                        $pdf->Line($y, $top_h2, $w, $top_h2, $style);//bottom
+                       
+                        $pdf->SetXY($nasleft, $nastop);
+                        $pdf->Cell(0, 0, 'สร้างโดย: '.$key['created_by'], 0, 0, 'L', 0, '', 0);
+
+                        $pdf->SetXY($groupleft, $grouptop);
+                        $pdf->Cell(0, 0, 'กลุ่ม : '.$key['profile'], 0, 0, 'L', 0, '', 0);
+
+                        $pdf->SetXY($userleft, $usertop);
+                        $pdf->Cell(0, 0, 'ชื่อผู้ใช้ (User) : '.$key['username'], 0, 0, 'L', 0, '', 0);
+
+                        $pdf->SetXY($passleft, $passtop);
+                        $pdf->Cell(0, 0, 'รหัสผ่าน (Pass) : '.$key['password'], 0, 0, 'L', 0, '', 0);
+
+                        $row++;
+
+                        $xp += 70;
+                        
+
+                        if( $row == 4 ){
+                            $flag++;
+                            $row = 0;
+
+                            $xp = 0.5;
+                            $yp += 46;
+
+                            $nastop += $h;
+                            $grouptop += $h;
+                            $usertop += $h;
+                            $passtop += $h; 
+                           
+                            $nasleft = 6;
+                            $groupleft = 6;
+                            $userleft = 6;
+                            $passleft = 6;
+
+                            $h1 += $h;
+                            $h2 += $h;
+                            $top_v1 += $h;
+                            $top_v2 += $h;
+                            $top_h1 += $h;
+                            $top_h2 += $h;
+                        }
+
+                        if( $flag == 9 ){
+                            $pdf->AddPage(); 
+                            $row = 0;
+                            $flag = 0;   
+                            $x1 = 0;
+                            $x2 = 0;
+                            $y = 0;
+                            $w = 0;
+
+                            $h = 30;
+                            
+                            $h1 = $h;
+                            $h2 = $h;
+                            $top_v1 = 1;
+                            $top_v2 = 1;
+                            $top_h1 = 1;
+                            $top_h2 = $h; 
+
+                            $xp = 0.5;
+                            $yp = 0.5; 
+
+                            $nasleft = 6;
+                            $nastop  = 2;
+                            $groupleft = 6;
+                            $grouptop  = 7;
+                            $userleft = 6;
+                            $usertop  = 13;
+                            $passleft = 6;
+                            $passtop  = 18;  
+                        }
+
+
+                    }//foreach  
+                    
+
+                    $filename = storage_path() . '/report_card_mt.pdf';         
+                    $contents = $pdf->output($filename, 'F');
+                    $headers = array(
+                        'Content-Type' => 'application/pdf',
+                    );
+                    return Response::download($filename, 'cardmt.pdf', $headers);
+
+                    //return redirect('routes/hotspot/usernet/'.Crypt::encrypt($postData['mtid']));
+                }else{
+                    return view('routes/error_connect', compact('data'));
+                }
+            }
+        }else{
+            return view('auth/login');
         }
     }
 
@@ -1074,6 +1528,52 @@ class MikrotikController extends Controller
                 }
            
                 $API->disconnect();
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
+        }else{
+            return view('auth/login');
+        }
+    }
+
+    /**
+    * แสดงหน้า ย้ายห้องผู้ใช้งาน
+    */
+    public function getMoveRoomUserNet($mtid)
+    {
+        $mtid = Crypt::decrypt($mtid);
+
+        if(Auth::check()){
+
+            $data = Mt::where('mtid', $mtid)->first();
+            $room = Room::where('mtid', $mtid)->get();
+
+            $room_list=[];
+            foreach ($room as $key => $value) {                    
+               $room_list[$value->room] = $value->room;
+            }
+
+            $API = new \App\routeros_api(); 
+            $API->debug = false;  
+            
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                  
+                $ARRAY = $API->comm ("/ip/dhcp-server/getall");
+                $ARRAY2 = $API->comm("/ip/hotspot/user/profile/getall");  
+
+                $API->disconnect();
+
+                $server_list=[];
+                foreach ($ARRAY as $value) {                    
+                 $server_list[$value['name']] = $value['name'];
+                } 
+
+                $profile_list=[];
+                foreach ($ARRAY2 as $value) {                    
+                 $profile_list[$value['name']] = $value['name'];
+                }    
+
+                return view('routes/hotspot/moveusernetroom', compact('data' ,'server_list', 'profile_list', 'room_list'));
             }else{
                 return view('routes/error_connect', compact('data'));
             }
