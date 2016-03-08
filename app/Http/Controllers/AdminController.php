@@ -11,7 +11,7 @@ use App\User;
 use App\Mt;
 use App\Room;
 use App\Common;
-use App\Card;
+use App\Users_net;
 use DB;
 use Routeros_api;
 
@@ -39,7 +39,7 @@ class AdminController extends Controller
 
             $user = count( User::all() );
             $mt = count( Mt::all() );
-            $card = count( Card::all() );
+            $usernet = count( Users_net::all() );
 
             $common = new Common();
 
@@ -56,7 +56,7 @@ class AdminController extends Controller
                     'hdd_perc'           => $hddperc
                 );
 
-            return view('admin/index', compact('user', 'mt', 'card', 'server'));
+            return view('admin/index', compact('user', 'mt', 'usernet', 'server'));
         }else{
             return view('auth/login');
         }

@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Card extends Authenticatable
+class Users_net extends Authenticatable
 {
-    protected $table = 'cards';
+    protected $table = 'Users_net';
 
     /**
      * The attributes that are mass assignable.
@@ -14,7 +14,7 @@ class Card extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'created_by', 'room', 'username', 'password', 'profile'
+        'created_by', 'room', 'username', 'password', 'profile', 'created_type'
     ];
 
 }

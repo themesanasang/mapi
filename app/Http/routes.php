@@ -83,6 +83,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('routes/hotspot/addcardusernet', 'MikrotikController@postAddCardUserNet');
 
     Route::get('routes/hotspot/moveusernetroom/{id}', 'MikrotikController@getMoveRoomUserNet');
+    Route::get('routes/hotspot/moveusernetroom/getuserroom/{id}/{id2}', 'MikrotikController@getUserRoom');
+    Route::get('routes/hotspot/moveusernetroom/getuserroom_new/{id}/{id2}', 'MikrotikController@getUserRoomNew');
+    Route::post('routes/hotspot/moveusernetroom/{id}', 'MikrotikController@postMoveRoomUserNet');
 
     Route::post('routes/deleteroutes', 'MikrotikController@postDeleteRoutes');
     Route::resource('routes','MikrotikController');

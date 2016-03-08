@@ -49,8 +49,8 @@
 							</div>
 							<div class="uk-width-medium-1-3">
 								<div class="uk-panel">
-									<h3 class="uk-panel-title"><i class="uk-icon-caret-right"></i> จำนวนบัตรที่มีการสร้าง</h3>
-									<p class="uk-text-success">จำนวน {{ $card }} บัตร</p>
+									<h3 class="uk-panel-title"><i class="uk-icon-caret-right"></i> จำนวนผู้ใช้งานอินเตอร์เน็ต</h3>
+									<p class="uk-text-success">จำนวน {{ $usernet }} ผู้ใช้</p>
 								</div>
 							</div>
 						</div>
@@ -62,6 +62,7 @@
 						<div id="chart01" style="height:300px;"></div>
 					</div>
 
+					
 
 					
 			</article>

@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Auth;
+use App\User;
+use App\Mt;
+use App\Room;
+use App\Common;
+use App\Card;
+use DB;
+use Routeros_api;
+use Crypt;
 
 class ContentController extends Controller
 {
@@ -23,75 +31,47 @@ class ContentController extends Controller
     public function index()
     {
         if(Auth::check()){
-            return view('content/index');
+
+            $userid = Auth::user()->id; 
+
+            $common = new Common();
+            $data = Mt::where('usermanage', $userid)->first();
+
+            $allroom = Room::where('mtid', $data->mtid)->count();
+
+            $API = new \App\routeros_api(); 
+            $API->debug = false;   
+
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+
+                $ARRAY = $API->comm("/system/resource/print");
+
+                //ถ้าดึงข้อมูล mt ไม่ได้ หรือ error แสดง 404
+                if( isset($ARRAY['!trap']) ){
+                  return view('routes/error_connect', compact('data'));
+                }else{
+                  $first = $ARRAY['0'];
+                }  
+
+                $useronline = $API->comm ("/ip/hotspot/active/getall"); 
+                $useronline = count($useronline); 
+
+                $memperc = ($first['free-memory']/$first['total-memory']);
+                $hddperc = ($first['free-hdd-space']/$first['total-hdd-space']);
+                $mem = ($memperc*100);
+                $hdd = ($hddperc*100); 
+                $uptime = $common->UptimeInSeconds($first['uptime']);
+
+                $API->disconnect();
+
+                return view('content/index', compact('data', 'useronline', 'mem', 'hdd', 'first', 'uptime', 'allroom'));
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
         }else{
             return view('auth/login');
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    
 }

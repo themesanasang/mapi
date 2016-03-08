@@ -15,7 +15,7 @@
   }
 ?>
 
-<nav class="app-navbar uk-navbar uk-navbar-attached" data-uk-sticky="{boundary:'#define-an-offset'}">  
+<nav class="app-navbar uk-navbar uk-navbar-attached">  
   @if (Auth::guest())
        <a class="uk-navbar-brand" href="{{ url('/') }}">MAPI</a>        
   @else

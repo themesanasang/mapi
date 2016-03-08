@@ -39,9 +39,9 @@
 					<button class="uk-button uk-button-primary uk-button-large uk-width-1-1 uk-margin-small-bottom">
 						<i class="uk-icon-justify uk-icon-key uk-icon-medium uk-float-left app-icon-left"></i> เข้าสู่ระบบ
 					</button>
-					<a href="{{ url('auth/facebook') }}" class="uk-button uk-button-large uk-button-facebook uk-width-1-1 uk-margin-small-bottom ">
+					<!--<a href="{{ url('auth/facebook') }}" class="uk-button uk-button-large uk-button-facebook uk-width-1-1 uk-margin-small-bottom ">
 						<i class="uk-icon-justify uk-icon-facebook uk-icon-medium uk-float-left app-icon-left"></i> เข้าสู่ระบบด้วย Facebook
-					</a>
+					</a>-->
 				</div>
 		    </fieldset>
 		</form>

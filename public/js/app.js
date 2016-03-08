@@ -47,8 +47,6 @@ $(function(){
             }
         });
     });
-  
- 
     
 
   }
@@ -127,6 +125,80 @@ $(function(){
   });
 
   
+
+
+
+  /**
+  * select ย้ายห้อง
+  */
+  $('#old_roomlist').on('change', function () {
+
+      var oldroom = $('#old_roomlist').val();
+
+      $( "#showuserroom_new" ).html( '' );
+      $('#move_roomlist').val('none');
+      $('#h-room-new').html('ห้อง');
+      
+      if( oldroom == 'none' ){
+        
+        $('#move_roomlist').attr("disabled", '');
+        $('#move_serverlist').attr("disabled", '');
+        $('#move_profilelist').attr("disabled", '');
+        $('#moveroomclick').attr("disabled", '');
+
+        $( "#showuserroom" ).html( '' );
+
+      }else{
+
+        $('#move_roomlist').removeAttr("disabled");
+        $('#move_serverlist').removeAttr("disabled");
+        $('#move_profilelist').removeAttr("disabled");
+        $('#moveroomclick').removeAttr("disabled");
+
+        var mtid = $('#movemtid').val();
+
+        $.get( 'getuserroom/'+mtid+'/'+oldroom, function( data ) {
+           $( "#showuserroom" ).html( data );
+        });
+
+      }
+
+  });
+
+  $('#move_roomlist').on('change', function () {
+    if( $('#move_roomlist').val() == 'none' ){
+        $( "#showuserroom_new" ).html( '' );
+        $('#h-room-new').html('ห้อง');
+    }else{
+       var mtid = $('#movemtid').val();
+      $('#h-room-new').html('ห้อง ' + $("#move_roomlist option:selected").text());
+
+        $.get( 'getuserroom_new/'+mtid+'/'+$('#move_roomlist').val(), function( data ) {
+           $( "#showuserroom_new" ).html( data );
+        });
+    }
+  });
+
+  $('#moveroomclick').click(function(){
+    if( $('#move_roomlist').val() == 'none' || $('#move_serverlist').val() == 'none' || $('#move_profilelist').val() == 'none' ){
+      alert('กรุณาเลือกข้อมูลให้ครบ');
+    }else{
+      var mtid = $('#movemtid').val();
+      var data = $('#old-alluserroom tbody input').serializeArray();
+      data.push( {name:'room', value:$('#move_roomlist').val()}, {name:'server', value:$('#move_serverlist').val()}, {name:'profile', value:$('#move_profilelist').val()}  );
+      
+      $.ajax({
+            type: "POST",
+            url: "moveusernetroom",
+            data: data,
+            success: function(data) {
+                window.location.reload(true); 
+            }
+      });
+    }
+  });
+
+
 
 
 	

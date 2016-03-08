@@ -9,7 +9,7 @@ use App\User;
 use App\Mt;
 use App\Room;
 use App\Common;
-use App\Card;
+use App\Users_net;
 use DB;
 use Crypt;
 use Request;
@@ -903,6 +903,15 @@ class MikrotikController extends Controller
                 $API->debug = false;   
 
                 if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+
+                    Users_net::create([
+                            'created_by' => Auth::user()->name,
+                            'room' => $postData['comment'],
+                            'username' => $postData['name'],
+                            'password' => $postData['password'],
+                            'profile' => $postData['profile'],
+                            'created_type' => 'form'
+                        ]);
                     
                     $ARRAY = $API->comm("/ip/hotspot/user/add", array(
                         'server'    => e($postData['server']),
@@ -1022,6 +1031,17 @@ class MikrotikController extends Controller
                         $password   = $val[1];
                         $comment    = $val[2];
 
+                        if( $name != '' ){
+                            Users_net::create([
+                                'created_by' => Auth::user()->name,
+                                'room' => $comment,
+                                'username' => $name,
+                                'password' => $password,
+                                'profile' => $postData['profile'],
+                                'created_type' => 'file'
+                            ]);
+                        }
+
                         $ARRAY = $API->comm("/ip/hotspot/user/add", array(
                             'server'    => $postData['server'],
                             'name'      => $name, 
@@ -1131,12 +1151,13 @@ class MikrotikController extends Controller
                         $username  = Common::random_string('alnum', 8);
                         $password  = Common::random_string('alnum', 8);
 
-                        Card::create([
+                        Users_net::create([
                             'created_by' => Auth::user()->name,
                             'room' => $postData['comment'],
                             'username' => $username,
                             'password' => $password,
-                            'profile' => $postData['profile']
+                            'profile' => $postData['profile'],
+                            'created_type' => 'card'
                         ]);
 
                         $ARRAY = $API->comm("/ip/hotspot/user/add", array(
@@ -1550,7 +1571,7 @@ class MikrotikController extends Controller
 
             $room_list=[];
             foreach ($room as $key => $value) {                    
-               $room_list[$value->room] = $value->room;
+               $room_list[$value->id] = $value->room;
             }
 
             $API = new \App\routeros_api(); 
@@ -1570,7 +1591,7 @@ class MikrotikController extends Controller
 
                 $profile_list=[];
                 foreach ($ARRAY2 as $value) {                    
-                 $profile_list[$value['name']] = $value['name'];
+                 $profile_list[$value['.id']] = $value['name'];
                 }    
 
                 return view('routes/hotspot/moveusernetroom', compact('data' ,'server_list', 'profile_list', 'room_list'));
@@ -1582,7 +1603,110 @@ class MikrotikController extends Controller
         }
     }
 
+    /**
+    * แสดงหน้ารายชื่อคนในห้อง
+    */
+    public function getUserRoom($mtid, $roomid)
+    {
+        $mtid = Crypt::decrypt($mtid);
 
+        if(Auth::check()){
+            $data = Mt::where('mtid', $mtid)->first();
+            $room = Room::where('mtid', $mtid)->where('id', $roomid)->first();
+            
+            $API = new \App\routeros_api(); 
+            $API->debug = false;   
+
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                 
+                $user = $API->comm("/ip/hotspot/user/print", array(
+                  "?comment" => $room->room ,
+                ));
+                 
+                $API->disconnect();  
+
+                if( isset($user['!trap']) ){
+                  return view('routes/error_connect', compact('data'));
+                }  
+
+                return view('routes/hotspot/olduserroom', compact('data', 'user'));
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
+        }else{
+            return view('auth/login');
+        }
+    }
+
+    /**
+    * แสดงหน้ารายชื่อคนในห้อง
+    */
+    public function getUserRoomNew($mtid, $roomid)
+    {
+        $mtid = Crypt::decrypt($mtid);
+
+        if(Auth::check()){
+            $data = Mt::where('mtid', $mtid)->first();
+            $room = Room::where('mtid', $mtid)->where('id', $roomid)->first();
+            
+            $API = new \App\routeros_api(); 
+            $API->debug = false;   
+
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                 
+                $user = $API->comm("/ip/hotspot/user/print", array(
+                  "?comment" => $room->room ,
+                ));
+                 
+                $API->disconnect();  
+
+                if( isset($user['!trap']) ){
+                  return view('routes/error_connect', compact('data'));
+                }  
+
+                return view('routes/hotspot/newuserroom', compact('data', 'user'));
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
+        }else{
+            return view('auth/login');
+        }
+    }
+
+    /**
+    * ย้ายห้อง
+    */
+    public function postMoveRoomUserNet()
+    {
+        if(Auth::check()){
+
+            $user = Request::all();
+            $data = Mt::where('mtid', $user['mtid'])->first();
+            $c = count($user['oldid']); 
+            $room = Room::where('mtid', $user['mtid'])->where('id', $user['room'])->first();
+                       
+            $API = new \App\routeros_api(); 
+            $API->debug = false;   
+
+            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                
+                for ($i=0; $i < $c; $i++) { 
+                    $ARRAY = $API->comm("/ip/hotspot/user/set", array(
+                        '.id'       => $user['oldid'][$i],
+                        'server'    => $user['server'],
+                        'profile'   => $user['profile'],
+                        'comment'   => $room->room
+                    )); 
+                }
+           
+                $API->disconnect();
+            }else{
+                return view('routes/error_connect', compact('data'));
+            }
+        }else{
+            return view('auth/login');
+        }
+    }
 
 
 
