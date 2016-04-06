@@ -37,36 +37,41 @@ class ContentController extends Controller
             $common = new Common();
             $data = Mt::where('usermanage', $userid)->first();
 
-            $allroom = Room::where('mtid', $data->mtid)->count();
+            if(count($data) > 0){
 
-            $API = new \App\routeros_api(); 
-            $API->debug = false;   
+                $allroom = Room::where('mtid', $data->mtid)->count();
 
-            if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
+                $API = new \App\routeros_api(); 
+                $API->debug = false;   
 
-                $ARRAY = $API->comm("/system/resource/print");
+                if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
 
-                //ถ้าดึงข้อมูล mt ไม่ได้ หรือ error แสดง 404
-                if( isset($ARRAY['!trap']) ){
-                  return view('routes/error_connect', compact('data'));
+                    $ARRAY = $API->comm("/system/resource/print");
+
+                    //ถ้าดึงข้อมูล mt ไม่ได้ หรือ error แสดง 404
+                    if( isset($ARRAY['!trap']) ){
+                      return view('routes/error_connect', compact('data'));
+                    }else{
+                      $first = $ARRAY['0'];
+                    }  
+
+                    $useronline = $API->comm ("/ip/hotspot/active/getall"); 
+                    $useronline = count($useronline); 
+
+                    $memperc = ($first['free-memory']/$first['total-memory']);
+                    $hddperc = ($first['free-hdd-space']/$first['total-hdd-space']);
+                    $mem = ($memperc*100);
+                    $hdd = ($hddperc*100); 
+                    $uptime = $common->UptimeInSeconds($first['uptime']);
+
+                    $API->disconnect();
+
+                    return view('content/index', compact('data', 'useronline', 'mem', 'hdd', 'first', 'uptime', 'allroom'));
                 }else{
-                  $first = $ARRAY['0'];
-                }  
-
-                $useronline = $API->comm ("/ip/hotspot/active/getall"); 
-                $useronline = count($useronline); 
-
-                $memperc = ($first['free-memory']/$first['total-memory']);
-                $hddperc = ($first['free-hdd-space']/$first['total-hdd-space']);
-                $mem = ($memperc*100);
-                $hdd = ($hddperc*100); 
-                $uptime = $common->UptimeInSeconds($first['uptime']);
-
-                $API->disconnect();
-
-                return view('content/index', compact('data', 'useronline', 'mem', 'hdd', 'first', 'uptime', 'allroom'));
+                    return view('routes/error_connect', compact('data'));
+                }
             }else{
-                return view('routes/error_connect', compact('data'));
+                return view('content/index');
             }
         }else{
             return view('auth/login');
