@@ -17,12 +17,12 @@
 
 <nav class="app-navbar uk-navbar uk-navbar-attached">  
   @if (Auth::guest())
-       <a class="uk-navbar-brand" href="{{ url('/') }}">MAPI</a>        
+       <a class="uk-navbar-brand" href="{{ url('/') }}">School</a>        
   @else
       @if (Auth::user()->type == 'admin')
-        <a class="uk-navbar-brand" href="{{ url('/systems') }}">MAPI</a>      
+        <a class="uk-navbar-brand" href="{{ url('/systems') }}">School</a>      
        @else
-        <a class="uk-navbar-brand" href="{{ url('/home') }}">MAPI</a>
+        <a class="uk-navbar-brand" href="{{ url('/home') }}">School</a>
        @endif
   @endif 
 

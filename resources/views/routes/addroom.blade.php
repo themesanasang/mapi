@@ -98,11 +98,11 @@
 											<td>{!! $value->room !!}</td>
 				                            <td>{!! $value->roomdetail !!}</td>			                            
 				                            <td>   
-				                                <a href="{{ url('routes/editpageroom') }}/{{ Crypt::encrypt($value['id']) }}/{{ Crypt::encrypt($value['mtid']) }}" data-uk-tooltip="{pos:'top'}" title="แก้ไข">
-				                                    <i class="uk-icon-edit"></i>
+				                                <a class="uk-button uk-button-success uk-button-mini" href="{{ url('routes/editpageroom') }}/{{ Crypt::encrypt($value['id']) }}/{{ Crypt::encrypt($value['mtid']) }}">
+				                                    <i class="uk-icon-edit"></i> แก้ไข
 				                                </a>
-					                            <a href="{{ url('routes/deleteroom') }}/{{ Crypt::encrypt($value['mtid']) }}/{{ Crypt::encrypt($value['id']) }}" data-uk-tooltip="{pos:'top'}" title="ลบ">
-				                                    <i class="uk-icon-remove"></i>
+					                            <a class="uk-button uk-button-danger uk-button-mini" href="{{ url('routes/deleteroom') }}/{{ Crypt::encrypt($value['mtid']) }}/{{ Crypt::encrypt($value['id']) }}">
+				                                    <i class="uk-icon-remove"></i> ลบ
 				                                </a>                               
 				                            </td>
 				                        </tr>

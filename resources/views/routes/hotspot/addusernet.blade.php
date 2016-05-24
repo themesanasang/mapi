@@ -32,7 +32,7 @@
 		                        @endif
 							</div>
 						</div>
-						<div class="uk-form-row">
+						<!--<div class="uk-form-row">
 							<label class="uk-form-label">ผู้ให้บริการ</label>
 							<div class="uk-form-controls">
 								{!! Form::select('server', ['none'=>'เลือก'] + $server_list, null, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
@@ -40,7 +40,7 @@
 		                            <span class="uk-text-danger">{{ Session::get('server') }}</span> 
 		                        @endif
 							</div>
-						</div>
+						</div>-->
 						<div class="uk-form-row">
 							<label class="uk-form-label" for="name">ชื่อผู้ใช้งาน</label>
 							<div class="uk-form-controls">

@@ -163,14 +163,17 @@ class MikrotikController extends Controller
             $mem = ($memperc*100);
             $hdd = ($hddperc*100); 
             $uptime = $common->UptimeInSeconds($first['uptime']);
+            
+            $hotspot = $API->comm ("/ip/hotspot/getall"); 
 
             $API->disconnect();
 
-            return view('routes/manage', compact('data', 'useronline', 'mem', 'hdd', 'first', 'uptime', 'allroom'));
+            return view('routes/manage', compact('data', 'useronline', 'mem', 'hdd', 'first', 'uptime', 'allroom', 'hotspot'));
         }else{
             return view('routes/error_connect', compact('data'));
         }
     }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -876,9 +879,9 @@ class MikrotikController extends Controller
             if( $postData['comment'] == 'none' ){
                 return Redirect()->back()->with('comment', 'กรุณาเลือกข้อมูล');
             }
-            if( $postData['server'] == 'none' ){
+            /*if( $postData['server'] == 'none' ){
                 return Redirect()->back()->with('server', 'กรุณาเลือกข้อมูล');
-            }
+            }*/
             if( $postData['profile'] == 'none' ){
                 return Redirect()->back()->with('profile', 'กรุณาเลือกข้อมูล');
             }
@@ -914,7 +917,7 @@ class MikrotikController extends Controller
                         ]);
                     
                     $ARRAY = $API->comm("/ip/hotspot/user/add", array(
-                        'server'    => e($postData['server']),
+                        //'server'    => e($postData['server']),
                         'name'      => e($postData['name']), 
                         'password'  => e($postData['password']),
                         'profile'   => e($postData['profile']),
@@ -984,9 +987,9 @@ class MikrotikController extends Controller
         $postData = Request::All();
         $file = Request::file('fileexcel');
 
-        if( $postData['server'] == 'none' ){
+        /*if( $postData['server'] == 'none' ){
             return Redirect()->back()->with('server', 'กรุณาเลือกข้อมูล');
-        }
+        }*/
         if( $postData['profile'] == 'none' ){
             return Redirect()->back()->with('profile', 'กรุณาเลือกข้อมูล');
         }
@@ -1043,7 +1046,7 @@ class MikrotikController extends Controller
                         }
 
                         $ARRAY = $API->comm("/ip/hotspot/user/add", array(
-                            'server'    => $postData['server'],
+                            //'server'    => $postData['server'],
                             'name'      => $name, 
                             'password'  => $password,
                             'profile'   => $postData['profile'],
@@ -1118,9 +1121,9 @@ class MikrotikController extends Controller
             if( $postData['comment'] == 'none' ){
                 return Redirect()->back()->with('comment', 'กรุณาเลือกข้อมูล');
             }
-            if( $postData['server'] == 'none' ){
+            /*if( $postData['server'] == 'none' ){
                 return Redirect()->back()->with('server', 'กรุณาเลือกข้อมูล');
-            }
+            }*/
             if( $postData['profile'] == 'none' ){
                 return Redirect()->back()->with('profile', 'กรุณาเลือกข้อมูล');
             }
@@ -1161,7 +1164,7 @@ class MikrotikController extends Controller
                         ]);
 
                         $ARRAY = $API->comm("/ip/hotspot/user/add", array(
-                            'server'    => e($postData['server']),
+                            //'server'    => e($postData['server']),
                             'name'      => $username, 
                             'password'  => $password,
                             'profile'   => e($postData['profile']),
@@ -1472,7 +1475,7 @@ class MikrotikController extends Controller
                 if( $API->connect($data->mtip, $data->mtusername, Crypt::decrypt($data->mtpassword)) ){
                     $ARRAY = $API->comm("/ip/hotspot/user/set", array(
                         '.id'       => e($postData['id']),
-                        'server'    => e($postData['server']),
+                        //'server'    => e($postData['server']),
                         'name'      => e($postData['name']), 
                         'password'  => e($postData['password']),
                         'profile'   => e($postData['profile']),
@@ -1693,7 +1696,7 @@ class MikrotikController extends Controller
                 for ($i=0; $i < $c; $i++) { 
                     $ARRAY = $API->comm("/ip/hotspot/user/set", array(
                         '.id'       => $user['oldid'][$i],
-                        'server'    => $user['server'],
+                        //'server'    => $user['server'],
                         'profile'   => $user['profile'],
                         'comment'   => $room->room
                     )); 

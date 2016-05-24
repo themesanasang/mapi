@@ -142,7 +142,7 @@ $(function(){
       if( oldroom == 'none' ){
         
         $('#move_roomlist').attr("disabled", '');
-        $('#move_serverlist').attr("disabled", '');
+        //$('#move_serverlist').attr("disabled", '');
         $('#move_profilelist').attr("disabled", '');
         $('#moveroomclick').attr("disabled", '');
 
@@ -151,7 +151,7 @@ $(function(){
       }else{
 
         $('#move_roomlist').removeAttr("disabled");
-        $('#move_serverlist').removeAttr("disabled");
+        //$('#move_serverlist').removeAttr("disabled");
         $('#move_profilelist').removeAttr("disabled");
         $('#moveroomclick').removeAttr("disabled");
 
@@ -180,12 +180,12 @@ $(function(){
   });
 
   $('#moveroomclick').click(function(){
-    if( $('#move_roomlist').val() == 'none' || $('#move_serverlist').val() == 'none' || $('#move_profilelist').val() == 'none' ){
+    if( $('#move_roomlist').val() == 'none' || $('#move_profilelist').val() == 'none' ){
       alert('กรุณาเลือกข้อมูลให้ครบ');
     }else{
       var mtid = $('#movemtid').val();
       var data = $('#old-alluserroom tbody input').serializeArray();
-      data.push( {name:'room', value:$('#move_roomlist').val()}, {name:'server', value:$('#move_serverlist').val()}, {name:'profile', value:$('#move_profilelist').val()}  );
+      data.push( {name:'room', value:$('#move_roomlist').val()}, {name:'profile', value:$('#move_profilelist').val()}  );
       
       $.ajax({
             type: "POST",

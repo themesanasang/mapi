@@ -62,6 +62,19 @@
 					</div>
 
 			</article>
+			
+			<br>
+			<hr>
+			<h4 class="uk-article-title">รายการ Hotspot</h4>
+			<ul class="uk-list uk-list-line">
+				@foreach($hotspot as $value)
+					<li>
+						- {{ $value['name'] }}
+						
+					</li>
+				@endforeach
+			</ul>
+			
 		</div>
     </div>
 

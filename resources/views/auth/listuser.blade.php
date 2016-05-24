@@ -44,11 +44,11 @@
 			                            <td>{!! $value['username'] !!}</td> 
 			                            <td>{!! $value['type'] !!}</td>			                            
 			                            <td>   
-			                                 <a href="{{ url('auth/edituser') }}/{{ Crypt::encrypt($value['id']) }}" data-uk-tooltip="{pos:'top'}" title="แก้ไข">
-			                                    <i class="uk-icon-edit"></i>
+			                                 <a class="uk-button uk-button-success uk-button-mini" href="{{ url('auth/edituser') }}/{{ Crypt::encrypt($value['id']) }}">
+			                                    <i class="uk-icon-edit"></i> แก้ไข
 			                                </a>
-				                                <a href="#" data-uk-tooltip="{pos:'top'}" title="ลบ" onclick="UIkit.modal.confirm('คุณต้องการลบผู้ใช้งาน {{ $value['username'] }}', function(){ deluser('{{ $value['id'] }}'); });">
-			                                    <i class="uk-icon-remove"></i>
+				                                <a class="uk-button uk-button-danger uk-button-mini" href="#" onclick="UIkit.modal.confirm('คุณต้องการลบผู้ใช้งาน {{ $value['username'] }}', function(){ deluser('{{ $value['id'] }}'); });">
+			                                    <i class="uk-icon-remove"></i> ลบ
 			                                </a>                               
 			                            </td>
 			                        </tr>

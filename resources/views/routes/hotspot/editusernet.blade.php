@@ -22,7 +22,7 @@
 					@foreach($user as $value)
 					<?php
 						$id = $value['.id']; 					
-						$server = ((isset($value['server']))?$value['server']:'');
+						//$server = ((isset($value['server']))?$value['server']:'');
 						$name = ((isset($value['name']))?$value['name']:'');
 						$password = ((isset($value['password']))?$value['password']:'');
 						$profile = ((isset($value['profile']))?$value['profile']:'');
@@ -42,12 +42,12 @@
 								{!! Form::select('comment', ['none'=>'เลือก'] + $room_list, $comment, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
 							</div>
 						</div>
-						<div class="uk-form-row">
+						<!--<div class="uk-form-row">
 							<label class="uk-form-label">ผู้ให้บริการ</label>
 							<div class="uk-form-controls">
 								{!! Form::select('server', ['none'=>'เลือก'] + $server_list, $server, ['class'=> '']) !!} <span class="uk-text-primary">* ควรเลือกรายการ</span>
 							</div>
-						</div>
+						</div>-->
 						<div class="uk-form-row">
 							<label class="uk-form-label" for="name">ชื่อผู้ใช้งาน</label>
 							<div class="uk-form-controls">

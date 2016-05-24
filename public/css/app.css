@@ -1,5 +1,10 @@
 html {
-	background-color: #F6F8EE;
+	background-color: #EFF1F7;
+}
+
+.uk-navbar-brand:hover{
+	color: #fff;
+	text-shadow: 0;
 }
 
 /* Menu */
@@ -13,7 +18,7 @@ html {
     border-style: solid;
     border-width: 1px;
     padding: 15px 0;
-    background-color: #95AA61;
+    background-color: #3B5998;
 }
 .app-navbar li a {
 	color: #fff;
@@ -159,7 +164,7 @@ html {
 
 /* Table custom */
 .uk-table  th {
-    background-color: #899752;
+    background-color: #3B5998;
     color: #fff;
     font-weight: 400;
     text-shadow: 0 0px 0 #fff;

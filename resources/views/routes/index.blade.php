@@ -34,9 +34,9 @@
 						        	@endif
 									<th>ชื่ออุปกรณ์</th>
 									<th>ไอพี</th>
-									<th>พอร์ต</th>
+									<!--<th>พอร์ต</th>
 									<th>ชื่อผู้ใช้งาน</th>
-									<th>รหัสผ่าน</th>
+									<th>รหัสผ่าน</th>-->
 									<th>รายละเอียด</th>
 									<th>จัดการ</th>
 								</tr>
@@ -51,19 +51,19 @@
 							        	@endif
 			                            <td>{!! $value->mtname !!}</td>
 										<td>{!! $value->mtip !!}</td>
-										<td>{!! $value->mtport !!}</td>
+										<!--<td>{!! $value->mtport !!}</td>
 										<td>{!! $value->mtusername !!}</td>
-			                            <td>{!! Crypt::decrypt($value->mtpassword) !!}</td> 
+			                            <td>{!! Crypt::decrypt($value->mtpassword) !!}</td> -->
 			                            <td>{!! $value->mtdetail !!}</td>			                            
 			                            <td>   
-			                            	<a href="{{ route( 'routes.show', Crypt::encrypt($value->mtid) ) }}" data-uk-tooltip="{pos:'top'}" title="จัดการ">
-			                                    <i class="uk-icon-cog"></i>
+			                            	<a class="uk-button uk-button-primary uk-button-mini" href="{{ route( 'routes.show', Crypt::encrypt($value->mtid) ) }}">
+			                                    <i class="uk-icon-cog"></i> จัดการ
 			                                </a>
-			                                <a href="{{ route( 'routes.edit', Crypt::encrypt($value->mtid) ) }}" data-uk-tooltip="{pos:'top'}" title="แก้ไข">
-			                                    <i class="uk-icon-edit"></i>
+			                                <a class="uk-button uk-button-success uk-button-mini" href="{{ route( 'routes.edit', Crypt::encrypt($value->mtid) ) }}">
+			                                    <i class="uk-icon-edit"></i> แก้ไข
 			                                </a>
-				                            <a href="#" data-uk-tooltip="{pos:'top'}" title="ลบ" onclick="UIkit.modal.confirm('คุณต้องการลบอุปกรณ์เชื่อมต่อ {{ $value->mtname }}', function(){ delroutes('{{ $value->mtid }}'); });">
-			                                    <i class="uk-icon-remove"></i>
+				                            <a class="uk-button uk-button-danger uk-button-mini" href="#" onclick="UIkit.modal.confirm('คุณต้องการลบอุปกรณ์เชื่อมต่อ {{ $value->mtname }}', function(){ delroutes('{{ $value->mtid }}'); });">
+			                                    <i class="uk-icon-remove"></i> ลบ
 			                                </a>                               
 			                            </td>
 			                        </tr>

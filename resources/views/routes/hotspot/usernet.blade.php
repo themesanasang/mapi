@@ -41,7 +41,7 @@
 											<tr>
 												<th><input name="user_select_all" value="1" id="user-select-all" type="checkbox"></th>
 												<th>ห้อง</th>
-												<th>ผู้ให้บริการ</th>
+												<!--<th>ผู้ให้บริการ</th>-->
 												<th>ชื่อผู้ใช้งาน</th>
 												<th>รูปแบบผู้ใช้งาน</th>
 												<th>อีเมล์</th>
@@ -54,16 +54,16 @@
 						                        <tr>
 						                        	<td><input type="checkbox" name="id[]" value="{{ $value['.id'] }}"></td>
 						                        	<td>{!! ((isset($value['comment']))?$value['comment']:'-') !!}</td>
-						                            <td>{!! ((isset($value['server']))?$value['server']:'-') !!}</td>
+						                            <!--<td>{!! ((isset($value['server']))?$value['server']:'-') !!}</td>-->
 						                            <td>{!! ((isset($value['name']))?$value['name']:'-') !!}</td>
 						                            <td>{!! ((isset($value['profile']))?$value['profile']:'-') !!}</td>
 						                            <td>{!! ((isset($value['email']))?$value['email']:'-') !!}</td>		                            
 						                            <td>   
-						                                <a href="{{ url('routes/hotspot/editusernet') }}/{{ Crypt::encrypt($value['name']) }}/{{ Crypt::encrypt($data->mtid) }}" data-uk-tooltip="{pos:'top'}" title="แก้ไข">
-						                                    <i class="uk-icon-edit"></i>
+						                                <a class="uk-button uk-button-success uk-button-mini" href="{{ url('routes/hotspot/editusernet') }}/{{ Crypt::encrypt($value['name']) }}/{{ Crypt::encrypt($data->mtid) }}">
+						                                    <i class="uk-icon-edit"></i> แก้ไข
 						                                </a>
-							                            <a href="{{ url('routes/hotspot/deleteusernet') }}/{{ Crypt::encrypt($value['.id']) }}/{{ Crypt::encrypt($data->mtid) }}" data-uk-tooltip="{pos:'top'}" title="ลบ">
-						                                    <i class="uk-icon-remove"></i>
+							                            <a class="uk-button uk-button-danger uk-button-mini" href="{{ url('routes/hotspot/deleteusernet') }}/{{ Crypt::encrypt($value['.id']) }}/{{ Crypt::encrypt($data->mtid) }}">
+						                                    <i class="uk-icon-remove"></i> ลบ
 						                                </a>                               
 						                            </td>
 						                        </tr>

@@ -50,12 +50,12 @@
 										{!! Form::select('movecomment', ['none'=>'เลือก'] + $room_list, null, ['class'=> 'uk-width-medium-1-1', 'disabled'=>'', 'id'=>'move_roomlist']) !!} 										
 									</div>
 								</div>
-					    		<div class="uk-form-row">
+					    		<!--<div class="uk-form-row">
 									<label class="uk-form-label">ผู้ให้บริการ:</label>
 									<div class="uk-form-controls">
 										{!! Form::select('moveserver', ['none'=>'เลือก'] + $server_list, null, ['class'=> 'uk-width-medium-1-1', 'disabled'=>'', 'id'=>'move_serverlist']) !!}
 									</div>
-								</div>
+								</div>-->
 								<div class="uk-form-row">
 									<label class="uk-form-label">รูปแบบผู้ใช้งาน:</label>
 									<div class="uk-form-controls">

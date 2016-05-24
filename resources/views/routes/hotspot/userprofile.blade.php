@@ -58,11 +58,11 @@
 				                            <td>{!! ((isset($value['shared-users']))?$value['shared-users']:'-') !!}</td>
 				                            <td>{!! ((isset($value['rate-limit']))?$value['rate-limit']:'-') !!}</td>			                            
 				                            <td>   
-				                                <a href="{{ url('routes/hotspot/edituserprofile') }}/{{ Crypt::encrypt($value['name']) }}/{{ Crypt::encrypt($data->mtid) }}" data-uk-tooltip="{pos:'top'}" title="แก้ไข">
-				                                    <i class="uk-icon-edit"></i>
+				                                <a class="uk-button uk-button-success uk-button-mini" href="{{ url('routes/hotspot/edituserprofile') }}/{{ Crypt::encrypt($value['name']) }}/{{ Crypt::encrypt($data->mtid) }}">
+				                                    <i class="uk-icon-edit"></i> แก้ไข
 				                                </a>
-					                            <a href="{{ url('routes/hotspot/deleteuserprofile') }}/{{ Crypt::encrypt($value['.id']) }}/{{ Crypt::encrypt($data->mtid) }}" data-uk-tooltip="{pos:'top'}" title="ลบ">
-				                                    <i class="uk-icon-remove"></i>
+					                            <a class="uk-button uk-button-danger uk-button-mini" href="{{ url('routes/hotspot/deleteuserprofile') }}/{{ Crypt::encrypt($value['.id']) }}/{{ Crypt::encrypt($data->mtid) }}">
+				                                    <i class="uk-icon-remove"></i> ลบ
 				                                </a>                               
 				                            </td>
 				                        </tr>
